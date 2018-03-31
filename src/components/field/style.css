@@ -1,0 +1,31 @@
+canvas {
+  position: fixed;
+  box-shadow: 0 0 1em #666;
+}
+.transition {
+  transition-duration: 0.75s;
+}
+#wrapper {
+  box-sizing: border-box;
+  display: inline-block;
+}
+.st0 {
+  fill:#FF0000;
+}
+.st1, .st2 {
+  fill:#2E3192;
+}
+.st3 {
+  fill: #2E3192;
+  stroke:#2E3192;
+  stroke-width:12;
+  stroke-miterlimit:10;
+}
+.null, .cross {
+  position: absolute;
+  opacity: 0.5;
+  top: 1em;
+  left: 1em;
+  z-index: 1;
+  pointer-events: none;
+}

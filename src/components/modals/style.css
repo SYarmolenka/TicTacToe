@@ -1,0 +1,33 @@
+.modalPlayerAI {
+  background: #fff;
+  display: inline-block;
+  padding: 2em;
+  padding-top: 0;
+  padding-bottom: 1em;
+  border-radius: 0.5em;
+}
+.inputName {
+  max-width: 30em;
+}
+.divider {
+  max-width: 20em;
+}
+.dimmer {
+  display: flex !important;
+}
+.modalCheckbox {
+  margin: 0.5em;
+  font-size: 1.5em !important;
+}
+
+.modalPP {
+  background: #fff;
+  display: inline-block;
+  padding: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-radius: 0.5em;
+}
+.labelName {
+  width: 15em;
+}

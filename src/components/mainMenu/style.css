@@ -1,0 +1,12 @@
+.bigImage {
+  opacity: 0.5;
+  left: 10%;
+}
+.buttonGroup {
+  z-index: 5;
+}
+.menuButtons {
+  display: block !important;
+  margin: 1em auto !important;
+  width: 20em;
+}
