@@ -6,48 +6,28 @@ import {doChoose} from '../../game/AILogic';
 import {Cross} from './cross';
 import {Null} from './null';
 import './style.css';
-import {userData} from '../../actions/modeGame';
 import GameOver from '../modals/gameOver';
 import local from '../../game/local';
-import {updateMode} from '../../actions/modeGame';
 import {updateGame} from '../../actions/game';
 import Canvas from './canvas';
 import {Header} from 'semantic-ui-react';
 
 class GameField extends Component {
   constructor (props) {
-    super(props);  
+    super(props);
     const {player1, player2, AI1, AI2} = this.props;
+    console.log(this.props)
     if (player1 || player2 || AI1 || AI2) {
       this.startGame();
     } else {
-      window.location.hash = '/';
+      local('tictactoe').then(local => {
+        if (local.gameOver) return window.location.hash = '/';
+        if (local.player1) this.start = 1;
+        this.props.updateGame(local);
+        if (local.AI1 && local.AI2) this.startGame();
+      }).catch(_ => { window.location.hash = '/'; });
     };
-    return;
-    Promise.all([local('mode'), local('game')]).then(local => {
-      // this.props.setMode(local[0]);
-      // this.props.setGame(local[1]);
-
-      // this.componentDidMount();
-      // this.start = 1;
-      // this.ctx = this.refs.canvas.getContext('2d');
-      // this.drawCanvas();
-      // this.refs.canvas.onclick = e => this.canvasClick(e);
-      this.startGame();
-    }).catch(_ => { window.location.hash = '/'; });
   };
-  // componentDidMount () {
-  //   if (this.props.field) {
-  //     this.ctx = this.refs.canvas.getContext('2d');
-  //     this.drawCanvas();
-  //     this.startGame();
-  //     console.log(`mount`, this.refs.canvas)
-  //     this.refs.canvas.onclick = e => this.canvasClick(e);
-  //   };
-  // };
-  // componentDidUpdate () {
-  //   if (this.props.field) this.drawCanvas();
-  // };
   clickHandler = (x, y) => {
     if (this.start && this.props.player1) {
       this.props.playerStep(x, y);
@@ -61,33 +41,34 @@ class GameField extends Component {
     this.props.playerStep(step.x, step.y);
   };
   greatBattle () {
-    this.repeat = true;
+    // this.repeat = true;
     let count = 0;
     this.timer = setInterval(_ => {
-      console.log(this.props.currentFigure)
       this.stepAI();
       count++;
       if (this.props.stop || count > 1000) {
         clearInterval(this.timer);
       }
-    }, 500);
+    }, 1000);
   };
   gameOver () {
     if (!this.props.stop) return false;
-    this.repeat = false;
+    // this.repeat = false;
     this.start = 0;
   };
   startGame () {
     if (this.start) return false;
-    if (this.props.player1 && this.props.AI1 === 'X') {
+    this.start = 1;
+    if (this.props.player1 && this.props.AI1 === 'X' && this.props.currentFigure === 'X') {
       this.stepAI();
     }
     if (this.props.AI1 && this.props.AI2) {
       this.greatBattle();
     };
-    this.start = 1;
   };
   render () {
+    let show;
+    show = this.start ? <Canvas clickHandler={this.clickHandler}/> : <p>spinner...</p>
     return (
       <div
         id='wrapper'
@@ -96,7 +77,7 @@ class GameField extends Component {
           height: `${document.documentElement.clientHeight - 5}px`
         }} >
         {/* <header><header> */}
-        <Canvas clickHandler={this.clickHandler}/>
+        {show}
       </div>
     );
   };
@@ -113,14 +94,9 @@ export default connect(
     AI1: state.game.AI1,
     AI2: state.game.AI2,
     currentFigure: state.game.currentFigure,
-    mode: state.mode_game
+    data: state.game
   }),
-  dispatch => ({
-    playerStep (...args) { dispatch(playerStep(...args)); },
-    countStep (...args) { dispatch(userData(...args)); },
-    setMode (obj) {dispatch(updateMode(obj)); },
-    setGame (obj) {dispatch(updateGame(obj)); }
-  }))(GameField);
+  { playerStep, updateGame })(GameField);
 
 
   // if (!this.props.field) return <div />;

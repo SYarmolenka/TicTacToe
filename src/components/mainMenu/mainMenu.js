@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import {Header, Image, Button, Container} from 'semantic-ui-react';
 import {HeaderApp} from '../header/headerApp';
 import './style.css';
 import image from './tictactoe.png';
@@ -38,9 +37,7 @@ class MainMenu extends Component {
 
 MainMenu = connect(
   state => ({}),
-  dispatch => ({
-    setMode (...args) {dispatch(setMode(...args))}
-  })
+  {setMode}
 )(MainMenu);
 
 export {MainMenu};

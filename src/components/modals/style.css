@@ -31,3 +31,11 @@
 .labelName {
   width: 15em;
 }
+
+.register {
+  display: 'flex' !important;
+  margin: auto !important;
+}
+.register .divider {
+  max-width: none;
+}

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://gitname.github.io/tictactoe",
   "dependencies": {
+    "firebase": "^4.12.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",

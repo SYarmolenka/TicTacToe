@@ -1,12 +1,21 @@
-export default (name, data) => {
+export default (name, data, add) => {
   if (!name) return window.localStorage.clear();
-  if (!data) {
+  if (data && add) {
+    Promise.resolve().then(_ => {
+      let result = window.localStorage.getItem(name);
+      result = result ? JSON.parse(result) : [];
+      return result;
+    }).then(result => {
+      window.localStorage.setItem(name, JSON.stringify([...result, data]));
+    });
+  };
+  if (!add && !data) {
     return new Promise((resolve, reject) => {
-      const data = window.localStorage.getItem(`tictactoe_${name}`);
-      console.log(`tictactoe_${name}`);
+      const data = window.localStorage.getItem(name);
       data ? resolve(JSON.parse(data)) : reject('No data');
     });
-  } else {
-    window.localStorage.setItem(`tictactoe_${name}`, JSON.stringify(data));
+  }
+  if (!add && data) {
+    window.localStorage.setItem(name, JSON.stringify(data));
   };
 };

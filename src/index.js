@@ -19,7 +19,7 @@ root.className = 'box gradDynamic';
 render(
   <Provider store={store}>
     <HashRouter onChange={console.log(`have changed route`)}>
-      <App /> 
+      <App />
     </HashRouter>
   </Provider>, root);
 registerServiceWorker();

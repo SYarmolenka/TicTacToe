@@ -36,28 +36,11 @@ export const game = (state = initState, action) => {
       currentFigure = currentFigure === 'O' ? 'X' : 'O';
     };
     const total = {...state, field: arr, lastCell, offsetField, gameOver, currentFigure};
-    local('game', total);
+    local('tictactoe', total);
+    local('tictactoe_history', arr, true);
     return total;
   };
+  if (action.type === UPDATE) return action.payload;
   if (action.type === SET_MODE) return {...state, [action.name]: action.value};
   return state;
 };
-
-// export const game = (state = initState, action) => {
-//   if (action.type === PLAYER_STEP) {
-//     let offset = [0, 0];
-//     let currentFigure = state.currentFigure;
-//     const arr = JSON.parse(JSON.stringify(state.field));
-//     arr[action.y][action.x] = currentFigure;
-//     const gameOver = judge(action.x, action.y, currentFigure, arr);
-//     if (!gameOver) {
-//       offset = improveArray(action.x, action.y, arr, true);
-//       currentFigure = currentFigure === 'O' ? 'X' : 'O';
-//     };
-//     const total = {...state, field: arr, player: !state.player, gameOver, offset, currentFigure};
-//     local('game', total);
-//     return total;
-//   };
-//   if (action.type === UPDATE) return Object.assign({}, state, action.payload);
-//   return state;
-// };

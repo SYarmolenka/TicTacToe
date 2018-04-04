@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
 import {game} from './game';
-import {mode_game} from './modeGame';
+import {register} from './register';
 
 export default combineReducers({
   game,
-  mode_game
+  register
 });
