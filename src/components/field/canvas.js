@@ -26,7 +26,7 @@ class Canvas extends Component {
     this.drawCanvas();
     this.offsetField(this.props.lastCell[0], this.props.lastCell[1]);
   };
-  canvasClick = (e) => {
+  canvasClick = e => {
     this.coords = this.refs.canvas.getBoundingClientRect();
     const mouse = {
       x: e.clientX,

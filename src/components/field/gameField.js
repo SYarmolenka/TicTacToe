@@ -10,28 +10,40 @@ import GameOver from '../modals/gameOver';
 import local from '../../game/local';
 import {updateGame} from '../../actions/game';
 import Canvas from './canvas';
-import {Header} from 'semantic-ui-react';
+import {Header, Modal, Button, Icon} from 'semantic-ui-react';
+import {changeData} from '../../actions/game';
+import firebase from 'firebase';
+import throttle from '../../game/throttle';
 
 class GameField extends Component {
   constructor (props) {
     super(props);
-    const {player1, player2, AI1, AI2} = this.props;
-    console.log(this.props)
-    if (player1 || player2 || AI1 || AI2) {
+    const {player1, player2, AI1, AI2, online} = this.props;
+    if (player1 || player2 || AI1 || AI2 || online) {
       this.startGame();
     } else {
       local('tictactoe').then(local => {
         if (local.gameOver) return window.location.hash = '/';
-        if (local.player1) this.start = 1;
+        if (local.player1) {
+          this.start = 1;
+        }
         this.props.updateGame(local);
         if (local.AI1 && local.AI2) this.startGame();
       }).catch(_ => { window.location.hash = '/'; });
     };
+    if (this.props.online) {
+      firebase.database().ref('rooms/' + this.props.online).on('value', data => {
+        (data.val() && data.val().conversation) ? this.props.changeData('conversation', true) : 0;
+      });
+    };
   };
   clickHandler = (x, y) => {
+    if (this.props.field[y][x] || this.props.stop) return;
     if (this.start && this.props.player1) {
       this.props.playerStep(x, y);
-      if (this.props.AI1) this.stepAI();
+      if (this.props.AI1) {
+        this.stepAI();
+      };
     };
   };
   stepAI () {
@@ -41,7 +53,6 @@ class GameField extends Component {
     this.props.playerStep(step.x, step.y);
   };
   greatBattle () {
-    // this.repeat = true;
     let count = 0;
     this.timer = setInterval(_ => {
       this.stepAI();
@@ -53,7 +64,6 @@ class GameField extends Component {
   };
   gameOver () {
     if (!this.props.stop) return false;
-    // this.repeat = false;
     this.start = 0;
   };
   startGame () {
@@ -66,6 +76,27 @@ class GameField extends Component {
       this.greatBattle();
     };
   };
+  denied = () => {
+    firebase.database().ref().update({[`rooms/${this.props.online}/conversation`]: false});
+  };
+  conversation () {
+    return (
+      <Modal open={this.props.conversation && this.props.conversation !== this.props.currentUser.uid} basic size='small'>
+        <Header icon='archive' content='Archive Old Messages' />
+        <Modal.Content>
+          <p>Your inbox is getting full, would you like us to enable automatic archiving of old messages?</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button basic color='red' inverted onClick={this.denied}>
+            <Icon name='remove' /> No
+          </Button>
+          <Button color='green' inverted>
+            <Icon name='checkmark' /> Yes
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    )
+  };
   render () {
     let show;
     show = this.start ? <Canvas clickHandler={this.clickHandler}/> : <p>spinner...</p>
@@ -76,6 +107,7 @@ class GameField extends Component {
           width: `${document.documentElement.clientWidth}px`,
           height: `${document.documentElement.clientHeight - 5}px`
         }} >
+        {this.conversation()}
         {/* <header><header> */}
         {show}
       </div>
@@ -94,17 +126,9 @@ export default connect(
     AI1: state.game.AI1,
     AI2: state.game.AI2,
     currentFigure: state.game.currentFigure,
-    data: state.game
+    data: state.game,
+    conversation: state.data.conversation,
+    currentUser: state.register.user,
+    online: state.game.online
   }),
-  { playerStep, updateGame })(GameField);
-
-
-  // if (!this.props.field) return <div />;
-  // const width = 1 + this.props.field[0].length * (this.props.cell + 1);
-  // const height = 1 + this.props.field.length * (this.props.cell + 1);
-  // this.width = width;
-  // this.height = height;
-  // if (this.offsetX === undefined) { this.offsetX = (document.documentElement.clientWidth - width) / 2; };
-  // if (this.offsetY === undefined) { this.offsetY = (document.documentElement.clientHeight - height) / 2; };
-  // return (
- 
+  { playerStep, updateGame, changeData })(GameField);

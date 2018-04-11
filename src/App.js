@@ -11,6 +11,7 @@ import Register from './components/modals/modalRegister';
 import {change as setUser} from './actions/register';
 import {connect} from 'react-redux';
 import Online from './components/modals/modalOnline';
+import {withRouter} from 'react-router-dom';
 
 class App extends Component {
   constructor (props) {
@@ -42,4 +43,4 @@ class App extends Component {
   };
 };
 
-export default connect(state => ({user: state.register.user}), {setUser})(App);
+export default withRouter(connect(_ => ({}), {setUser})(App));

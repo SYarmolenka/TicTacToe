@@ -1,6 +1,7 @@
 export const PLAYER_STEP = 'PLAYER_STEP';
 export const SET_MODE = 'SET_MODE';
 export const UPDATE = 'UPDATE';
+export const CHANGE_DATA = 'CHANGE_DATA';
 
 export const playerStep = (x, y) => ({
   type: PLAYER_STEP,
@@ -15,6 +16,12 @@ export const updateGame = (obj) => ({
 
 export const setMode = (name, value) => ({
   type: SET_MODE,
+  name,
+  value
+});
+
+export const changeData = (name, value) => ({
+  type: CHANGE_DATA,
   name,
   value
 });

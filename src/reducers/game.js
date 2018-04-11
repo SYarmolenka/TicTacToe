@@ -21,7 +21,6 @@ const initState = {
 
 export const game = (state = initState, action) => {
   if (action.type === PLAYER_STEP) {
-    if (state.field[action.y][action.x] === 'X' || state.field[action.y][action.x] === 'O' || state.gameOver) return state;
     let offsetField, lastCell;
     const arr = JSON.parse(JSON.stringify(state.field));
     let currentFigure = state.currentFigure;

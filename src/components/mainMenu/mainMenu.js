@@ -20,6 +20,10 @@ class MainMenu extends Component {
     if (mode === 'PL_PL') {
       window.location.hash = 'modalpp';
     };
+    if (mode === 'ONLINE') {
+      // this.props.setMode('online', true);
+      window.location.hash = 'modalonline';
+    };
   };
   render () {
     return (
@@ -28,7 +32,7 @@ class MainMenu extends Component {
           <FlyButton cb={_ => this.eventClick('PL_AI')} name='With AI' initPosition={{top: 100, left: 100}} timing='.20, 0, .80, 1' />
           <FlyButton cb={_ => this.eventClick('PL_PL')} name='With Player' initPosition={{top: 100, left: 300}} timing='.40, .05 .40, .95' />
           <FlyButton cb={_ => this.eventClick('AI_AI')} name='AI & AI' initPosition={{top: 100, left: 500}} timing='.60, .10, .40, .90' />
-          <FlyButton name='Network' initPosition={{top: 100, left: 700}} timing='.30, .15, .70, .85' />
+          <FlyButton cb={_ => this.eventClick('ONLINE')} name='Network' initPosition={{top: 100, left: 700}} timing='.30, .15, .70, .85' />
         </div>
       </div>
     )
