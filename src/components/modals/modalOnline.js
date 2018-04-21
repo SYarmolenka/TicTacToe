@@ -9,20 +9,26 @@ import {setMode} from '../../actions/game';
 class Online extends Component {
   constructor (props) {
     super(props);
-    firebase.database().ref('rooms/').on('value', data => {
+    firebase.database().ref('users/').on('value', data => {
       this.dataReady = 1;
-      this.props.changeData('rooms', data.val() || 'No active rooms');
+      this.props.changeData('usersOnline', this.filterUsers(data.val()) || 'No active rooms');
     });
   };
+  filterUsers (users) {
+    const result = {};
+    for (let key in users) {
+      if (key !== this.props.mainUser.uid && users[key].online) result[key] = users[key];
+    };
+    return result;
+  };
   createRoomList () {
-    if (typeof this.props.rooms === 'string') return <p>{this.props.rooms}</p>
     const list = [];
-    for (let key in this.props.rooms) {
+    for (let key in this.props.users) {
       list.push(
         <List.Item key={key} folder={key} onClick={e => this.connectUser(e.target)}>
-          <Image avatar src={this.props.rooms[key].photo} />
+          <Image avatar src={this.props.users[key].photoURL} />
           <List.Content>
-            <List.Header>{this.props.rooms[key].name}</List.Header>
+            <List.Header>{this.props.users[key].name}</List.Header>
           </List.Content>
         </List.Item>
       )
@@ -35,26 +41,47 @@ class Online extends Component {
   };
   connectUser = (elem) => {
     const key = elem.closest('.item').getAttribute('folder');
-    firebase.database().ref().update({[`rooms/${key}/conversation`]: true});
+    const ownKey = this.props.mainUser.uid;
+    const fb = firebase.database();
+    const usersData = Promise.all([
+      new Promise(resolve => {fb.ref(`users/${key}`).once('value', data => resolve(data.val()))}),
+      new Promise(resolve => {fb.ref(`users/${ownKey}`).once('value', data => resolve(data.val()))}),
+    ]).then(arr => {
+      const connect = arr[0].online.connect || {};
+      if (!(ownKey in connect)) connect[ownKey] = arr[1];
+      fb.ref(`users/${key}/online/connect`).set(connect);
+      fb.ref(`users/${key}/online`).on('value', data => {
+        data = data.val();
+        if (data.players[1]) {
+          this.props.changeData('signObserver', key);
+          this.props.setMode('online', this.props.mainUser.uid);
+          window.location.hash = 'game';
+        } else {
+          //khgjhgjkhjkkgkjhgkjhgjkhgkjhghjjjjjjjjjjjjjjjjjjjjjjjjjjjj
+        };
+      });
+    });
+    this.props.changeData('connecting', true);
+    this.dataReady = 0;
   };
   createRoom = () => {
-    const key = firebase.database().ref().child('rooms').push().key;
-    const data = {
-      name: this.props.name,
-      field: this.props.field,
-      photo: this.props.mainUser.photoURL || mark
-    };
-    this.props.changeData('name', '');
-    firebase.database().ref('rooms/' + this.props.mainUser.uid).set(data);
-    firebase.database().ref('rooms/' + this.props.online).on('value', data => {
-      (data.val() && data.val().conversation) ? this.props.changeData('conversation', this.props.mainUser.uid) : 0;
+    if (!this.dataReady) return;
+    firebase.database().ref('users/' + this.props.mainUser.uid).once('value', data => {
+      data = data.val();
+      data.online = {players: [data.name, 0]};
+      firebase.database().ref('users/' + this.props.mainUser.uid).set(data).then(_ => {
+        firebase.database().ref(`users/${this.props.mainUser.uid}/online/connect`).on('value', data => {
+          this.props.changeData('usersWantConnect', data.val());
+        });
+      });
     });
     this.props.setMode('online', this.props.mainUser.uid);
     window.location.hash = 'game';
   };
   render () {
+    if (!this.props.mainUser) return null;
     return (
-      <Modal size='mini' className='register' open={true} onClose={_ => {}}>
+      <Modal size='mini' className='register' open={this.props.open} onClose={_ => {}}>
         <Modal.Header>
           Choose room
         </Modal.Header>
@@ -62,8 +89,8 @@ class Online extends Component {
           <Divider horizontal>connect to room</Divider>
           {(_ => {return this.dataReady ? this.createRoomList() : <p>...Spinner</p> })()}
           <Divider horizontal>or create room</Divider>
-          <Input fluid type='text' value={this.props.name} placeholder='Name of room...' onChange={e => this.props.changeData('name', e.target.value)} />
-          <Button color='green' fluid onClick={this.createRoom}>Create Room</Button>
+          {/* <Input fluid type='text' value={this.props.name} placeholder='Name of room...' onChange={e => this.props.changeData('name', e.target.value)} /> */}
+          <Button disabled={this.props.connecting} color='green' fluid onClick={this.createRoom}>Create Room</Button>
         </Modal.Content>
       </Modal>
     );
@@ -72,10 +99,9 @@ class Online extends Component {
 
 export default connect(
   state => ({
-    rooms: state.data.rooms,
-    name: state.data.name,
-    mainUser: state.register.user,
-    field: state.game.field
+    connecting: state.data.connecting,
+    users: state.data.usersOnline,
+    mainUser: state.register.user
   }),
   {changeData, setMode}
 )(Online);

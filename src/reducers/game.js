@@ -21,10 +21,14 @@ const initState = {
 
 export const game = (state = initState, action) => {
   if (action.type === PLAYER_STEP) {
-    let offsetField, lastCell;
-    const arr = JSON.parse(JSON.stringify(state.field));
+    let arr, offsetField, lastCell;
     let currentFigure = state.currentFigure;
-    arr[action.y][action.x] = currentFigure;
+    if (!action.field) {
+      arr = JSON.parse(JSON.stringify(state.field));
+      arr[action.y][action.x] = currentFigure;
+    } else {
+      arr = action.field;
+    }
     const gameOver = judge(action.x, action.y, currentFigure, arr);
     if (gameOver) {
       lastCell = new Array(2);
@@ -35,8 +39,8 @@ export const game = (state = initState, action) => {
       currentFigure = currentFigure === 'O' ? 'X' : 'O';
     };
     const total = {...state, field: arr, lastCell, offsetField, gameOver, currentFigure};
-    local('tictactoe', total);
-    local('tictactoe_history', arr, true);
+    // local('tictactoe', total);
+    // local('tictactoe_history', arr, true);
     return total;
   };
   if (action.type === UPDATE) return action.payload;

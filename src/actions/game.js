@@ -3,10 +3,11 @@ export const SET_MODE = 'SET_MODE';
 export const UPDATE = 'UPDATE';
 export const CHANGE_DATA = 'CHANGE_DATA';
 
-export const playerStep = (x, y) => ({
+export const playerStep = (x, y, field) => ({
   type: PLAYER_STEP,
   x,
-  y
+  y,
+  field
 });
 
 export const updateGame = (obj) => ({

@@ -36,8 +36,6 @@ class App extends Component {
         <Route path='/modalpa' component={ModalPlayerAI} />
         <Route path='/over' component={GameOver} />
         <Route path='/modalpp' component={ModalPlPl} />
-        <Route path='/modalreg' component={Register} />
-        <Route path='/modalonline' component={Online} />
       </div>
     );
   };

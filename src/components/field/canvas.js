@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import throttle from '../../game/throttle';
+import './style.css';
 
 class Canvas extends Component {
   constructor (props) {
     super(props);
     this.width = 1 + this.props.field[0].length * (this.props.cell + 1);
     this.height = 1 + this.props.field.length * (this.props.cell + 1);
-    this.offsetX = (document.documentElement.clientWidth - this.width) / 2;
-    this.offsetY = (document.documentElement.clientHeight - this.height) / 2;
+    this.screenWidth = this.props.screenWidth;
+    this.screenHeight = this.props.screenHeight;
+    this.offsetX = (this.screenWidth - this.width) / 2;
+    this.offsetY = (this.screenHeight - this.height) / 2;
   };
   componentDidMount () {
     this.ctx = this.refs.canvas.getContext('2d');
@@ -103,13 +106,13 @@ class Canvas extends Component {
     if (this.offsetX + x < 2 * this.props.cell) {
       left = 2 * this.props.cell;
     };
-    if (x + this.offsetX > document.documentElement.clientWidth - this.props.cell * 2) {
+    if (x + this.offsetX > this.screenWidth - this.props.cell * 2) {
       left = -2 * this.props.cell;
     };
     if (this.offsetY + y < 2 * this.props.cell) {
       top = 2 * this.props.cell;
     };
-    if (y + this.offsetY > document.documentElement.clientHeight - this.props.cell * 2) {
+    if (y + this.offsetY > this.screenHeight - this.props.cell * 2) {
       top = -2 * this.props.cell;
     };
     if (left !== 0 || top !== 0) {
@@ -118,7 +121,7 @@ class Canvas extends Component {
       this.offsetX = this.coords.left + left;
       this.refs.canvas.style.top = `${this.offsetY}px`;
       this.refs.canvas.style.left = `${this.offsetX}px`;
-      setTimeout(elem => (elem.classList.remove('transition')), 450, this.refs.canvas);
+      setTimeout(elem => (elem.classList.remove('transition')), 1500, this.refs.canvas);
     };
   };
   moveField (props) {

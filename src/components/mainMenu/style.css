@@ -1,12 +1,12 @@
-.bigImage {
-  opacity: 0.5;
-  left: 10%;
+.wrapperMenu {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
 }
-.buttonGroup {
-  z-index: 5;
-}
-.menuButtons {
-  display: block !important;
-  margin: 1em auto !important;
-  width: 20em;
+.flyButtons {
+  display: grid;
+  margin: auto;
+  grid-template-columns: 10em 10em 10em 10em;
+  grid-column-gap: 5em;
 }

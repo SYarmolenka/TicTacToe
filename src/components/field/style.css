@@ -3,7 +3,7 @@ canvas {
   box-shadow: 0 0 1em #666;
 }
 .transition {
-  transition-duration: 0.75s;
+  transition-duration: 0.5s;
 }
 #wrapper {
   box-sizing: border-box;
@@ -28,4 +28,9 @@ canvas {
   left: 1em;
   z-index: 1;
   pointer-events: none;
+}
+.panel {
+  position: absolute;
+  background: white;
+  z-index: 3;
 }

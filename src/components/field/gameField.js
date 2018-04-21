@@ -14,27 +14,25 @@ import {Header, Modal, Button, Icon} from 'semantic-ui-react';
 import {changeData} from '../../actions/game';
 import firebase from 'firebase';
 import throttle from '../../game/throttle';
+import Connect from './connect';
+import Panel from './panel';
 
 class GameField extends Component {
   constructor (props) {
     super(props);
+    this.onlineStep = true;
     const {player1, player2, AI1, AI2, online} = this.props;
     if (player1 || player2 || AI1 || AI2 || online) {
       this.startGame();
     } else {
       local('tictactoe').then(local => {
-        if (local.gameOver) return window.location.hash = '/';
+        if (local.gameOver || Object.keys(local).length === 0) return window.location.hash = '/';
         if (local.player1) {
           this.start = 1;
         }
         this.props.updateGame(local);
         if (local.AI1 && local.AI2) this.startGame();
       }).catch(_ => { window.location.hash = '/'; });
-    };
-    if (this.props.online) {
-      firebase.database().ref('rooms/' + this.props.online).on('value', data => {
-        (data.val() && data.val().conversation) ? this.props.changeData('conversation', true) : 0;
-      });
     };
   };
   clickHandler = (x, y) => {
@@ -45,7 +43,20 @@ class GameField extends Component {
         this.stepAI();
       };
     };
+    if (this.start && this.props.online && this.onlineStep) {
+      this.props.playerStep(x, y);
+      this.onlineStep = false;
+      if (this.props.signObserver) {
+        firebase.database().ref(`users/${this.props.signObserver}/online/${this.props.currentUser.uid}`).set({step: [x, y], field: this.props.field});
+      } else {
+        firebase.database().ref(`users/${this.props.currentUser.uid}/online/${this.props.currentUser.uid}`).set({step: [x, y], field: this.props.field});
+      };
+    };
   };
+  onlineObserver = (step, field) => {
+    this.onlineStep = true;
+    this.props.playerStep(step[0], step[1], field);
+  }
   stepAI () {
     const mine = this.props.currentFigure;
     const enemy = mine === 'X' ? 'O' : 'X';
@@ -76,39 +87,28 @@ class GameField extends Component {
       this.greatBattle();
     };
   };
-  denied = () => {
-    firebase.database().ref().update({[`rooms/${this.props.online}/conversation`]: false});
-  };
-  conversation () {
-    return (
-      <Modal open={this.props.conversation && this.props.conversation !== this.props.currentUser.uid} basic size='small'>
-        <Header icon='archive' content='Archive Old Messages' />
-        <Modal.Content>
-          <p>Your inbox is getting full, would you like us to enable automatic archiving of old messages?</p>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button basic color='red' inverted onClick={this.denied}>
-            <Icon name='remove' /> No
-          </Button>
-          <Button color='green' inverted>
-            <Icon name='checkmark' /> Yes
-          </Button>
-        </Modal.Actions>
-      </Modal>
-    )
-  };
   render () {
-    let show;
-    show = this.start ? <Canvas clickHandler={this.clickHandler}/> : <p>spinner...</p>
+    let show, connectUser;
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+    show = this.start ? <Canvas clickHandler={this.clickHandler} screenWidth={width * 0.8} screenHeight={height}/> : <p>spinner...</p>;
     return (
       <div
         id='wrapper'
         style={{
-          width: `${document.documentElement.clientWidth}px`,
-          height: `${document.documentElement.clientHeight - 5}px`
+          display: 'block',
+          width: `${width * 0.8}px`,
+          height: `${height}px`,
+          border: '1px solid red',
+          overflow: 'hidden'
         }} >
-        {this.conversation()}
-        {/* <header><header> */}
+        <Panel
+          observer={this.onlineObserver}
+          start={this.startGame}
+          width={width * 0.2}
+          height={height}
+          left={width * 0.8}
+          top='0' />
         {show}
       </div>
     );
@@ -127,8 +127,8 @@ export default connect(
     AI2: state.game.AI2,
     currentFigure: state.game.currentFigure,
     data: state.game,
-    conversation: state.data.conversation,
     currentUser: state.register.user,
-    online: state.game.online
+    online: state.game.online,
+    signObserver: state.data.signObserver
   }),
   { playerStep, updateGame, changeData })(GameField);
