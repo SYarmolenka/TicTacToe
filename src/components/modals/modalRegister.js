@@ -60,7 +60,7 @@ class Register extends Component {
   };
   render () {
     return (
-      <Modal size='mini' className='register' open={this.props.open} onClose={_ => {}}>
+      <Modal size='mini' className='register' open={this.props.open} onClose={this.props.close}>
         <Modal.Header>
           Registration
         </Modal.Header>

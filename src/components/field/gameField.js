@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {playerStep} from '../../actions/game';
-import {improveArray} from '../../game/changeArray';
 import {doChoose} from '../../game/AILogic';
 import {Cross} from './cross';
 import {Null} from './null';
@@ -10,11 +9,8 @@ import GameOver from '../modals/gameOver';
 import local from '../../game/local';
 import {updateGame} from '../../actions/game';
 import Canvas from './canvas';
-import {Header, Modal, Button, Icon} from 'semantic-ui-react';
 import {changeData} from '../../actions/game';
 import firebase from 'firebase';
-import throttle from '../../game/throttle';
-import Connect from './connect';
 import Panel from './panel';
 
 class GameField extends Component {
@@ -88,7 +84,7 @@ class GameField extends Component {
     };
   };
   render () {
-    let show, connectUser;
+    let show;
     const width = document.documentElement.clientWidth;
     const height = document.documentElement.clientHeight;
     show = this.start ? <Canvas clickHandler={this.clickHandler} screenWidth={width * 0.8} screenHeight={height}/> : <p>spinner...</p>;

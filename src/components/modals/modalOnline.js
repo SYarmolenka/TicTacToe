@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {Modal, Input, Button, Divider, List, Image} from 'semantic-ui-react';
+import {Modal, Button, Divider, List, Image} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {changeData} from '../../actions/game';
 import firebase from 'firebase';
-import mark from '../../userPhoto/mark.png';
 import {setMode} from '../../actions/game';
 
 class Online extends Component {
@@ -40,24 +39,24 @@ class Online extends Component {
     );
   };
   connectUser = (elem) => {
-    const key = elem.closest('.item').getAttribute('folder');
-    const ownKey = this.props.mainUser.uid;
+    const key = elem.closest('.item').getAttribute('folder'); // получаем key пользователя, по которому кликнули
+    const ownKey = this.props.mainUser.uid; // получаем собственный key
     const fb = firebase.database();
-    const usersData = Promise.all([
+    Promise.all([ // запрос данных с сервера
       new Promise(resolve => {fb.ref(`users/${key}`).once('value', data => resolve(data.val()))}),
       new Promise(resolve => {fb.ref(`users/${ownKey}`).once('value', data => resolve(data.val()))}),
     ]).then(arr => {
-      const connect = arr[0].online.connect || {};
-      if (!(ownKey in connect)) connect[ownKey] = arr[1];
-      fb.ref(`users/${key}/online/connect`).set(connect);
-      fb.ref(`users/${key}/online`).on('value', data => {
+      const connect = arr[0].online.connect || {}; // заходим в папку connect или создаем
+      if (!(ownKey in connect)) connect[ownKey] = arr[1]; // добавляем в connect данные по подключаемому user
+      fb.ref(`users/${key}/online/connect`).set(connect); // отправляем connect на сервер
+      fb.ref(`users/${key}/online`).on('value', data => { // подписываемся на изменение данных
         data = data.val();
-        if (data.players[1]) {
-          this.props.changeData('signObserver', key);
-          this.props.setMode('online', this.props.mainUser.uid);
+        if (data.players[1]) { // если админ комнаты согласен, то
+          this.props.changeData('signObserver', key); // записываем ключ для подписки на изменение данных на сервере 
+          this.props.setMode('online', this.props.mainUser.uid); // 
           window.location.hash = 'game';
         } else {
-          //khgjhgjkhjkkgkjhgkjhgjkhgkjhghjjjjjjjjjjjjjjjjjjjjjjjjjjjj
+          //khgjhgjkhjkkgkjhgkjhgjkhgkjhghjjjjjjjjj
         };
       });
     });
@@ -81,7 +80,7 @@ class Online extends Component {
   render () {
     if (!this.props.mainUser) return null;
     return (
-      <Modal size='mini' className='register' open={this.props.open} onClose={_ => {}}>
+      <Modal size='mini' className='register' open={this.props.open} onClose={this.props.close}>
         <Modal.Header>
           Choose room
         </Modal.Header>

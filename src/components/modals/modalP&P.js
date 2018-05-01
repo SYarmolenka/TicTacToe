@@ -5,19 +5,24 @@ import {setMode} from '../../actions/game';
 import './style.css';
 
 class ModalPlPl extends Component {
-  constructor(props) {
-    super(props);
-    this.props.setMode('player1', 'X');
-    this.props.setMode('player2', 'O');
+  componentWillReceiveProps (props) {
+    if (props.open) {
+      this.props.setMode('player1', 'X');
+      this.props.setMode('player2', 'O');
+    };
   };
   startGame = () => {
-    if (!this.props.name1 || !this.props.name1) return;
+    if (!this.props.name1 || !this.props.name2) return;
     window.location.hash = 'game';
+  };
+  closeModal = () => {
+    this.props.setMode('player1', false);
+    this.props.setMode('player2', false);
   };
   render () {
     return (
       <div>
-        <Dimmer active={true} onClickOutside={this.handleClose} page>
+        <Dimmer active={this.props.open} onClickOutside={this.props.close} page>
           <Form className='modalPP'>
             <Form.Field inline>
               <Label className='labelName' basic color='black' pointing='right'>First Player X:</Label>

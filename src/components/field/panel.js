@@ -29,6 +29,9 @@ class Panel extends Component {
       });
     });
   };
+  deleteUserFromLst (key) {
+
+  }
   clickEvents = (elem) => {
     if (elem.closest('.userConnect')) {
       const key = elem.closest('.userConnect').getAttribute('user');

@@ -14,7 +14,7 @@ const CornerMenu = (props) => {
       <button><Icon size='big' name='list layout' /></button>
       <button><Icon loading size='big' name='setting' /></button>
       <button onClick={props.click2} >{(_ => {
-        return user ? <Image size='mini' avatar src={user.photoURL || defaultPhoto} /> : <Icon size='big' name='add user' />
+        return user ? <Image size='mini' avatar src={user.photoURL || defaultPhoto} lowsrc={defaultPhoto} /> : <Icon size='big' name='add user' />
       })()}</button>
       <button><Icon size='big' name='info circle' /></button>
     </div>

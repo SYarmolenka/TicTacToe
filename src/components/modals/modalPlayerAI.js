@@ -5,20 +5,27 @@ import './style.css';
 import {setMode} from '../../actions/game';
 
 class ModalPlayerAI extends Component {
-  constructor (props) {
-    super(props);
-    this.props.setMode('player1', 'X');
-    this.props.setMode('AI1', 'O');
-    this.props.setMode('level', 'easy');
+  componentWillReceiveProps (props) {
+    if (props.open) {
+      this.props.setMode('player1', 'X');
+      this.props.setMode('AI1', 'O');
+      this.props.setMode('level', 'easy');
+    };
   };
   startGame = () => {
     if (this.props.name) {
       window.location.hash = 'game';
-    }
+    };
   };
+  closeModal = () => {
+    this.props.setMode('player1', false);
+    this.props.setMode('AI1', false);
+    this.props.setMode('level', false);
+    this.props.close();
+  }
   render() {
     return (
-      <Dimmer active={true} onClickOutside={this.handleClose} page>
+      <Dimmer active={this.props.open} onClickOutside={this.closeModal} page>
         <Form className='modalPlayerAI'>
           <Divider horizontal>Choose your figure</Divider>
           <Form.Field>

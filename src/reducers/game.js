@@ -1,7 +1,6 @@
 import {PLAYER_STEP, SET_MODE, UPDATE} from '../actions/game';
 import {judge} from '../game/judge';
 import {improveArray} from '../game/changeArray';
-import local from '../game/local';
 
 const initState = {
   field: new Array(5).fill(0).map(elem => new Array(5).fill(0)),
