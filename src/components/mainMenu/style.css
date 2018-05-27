@@ -1,0 +1,12 @@
+.wrapperMenu {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+}
+.flyButtons {
+  display: grid;
+  margin: auto;
+  grid-template-columns: 10em 10em 10em 10em;
+  grid-column-gap: 5em;
+}

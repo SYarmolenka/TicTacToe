@@ -1,21 +1,38 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import {Route} from 'react-router-dom';
+import {MainMenu} from './components/mainMenu/mainMenu';
+import {About} from './components/about';
+import GameField from './components/field/gameField';
+import GameOver from './components/modals/gameOver';
+import firebase from 'firebase';
+import {change as setUser} from './actions/register';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 
 class App extends Component {
-  render() {
+  constructor (props) {
+    super(props);
+    const config = {
+      apiKey: "AIzaSyAyKqRH2TjBtft8sIVpEcvvEXO9fhCT3Ag",
+      authDomain: "tictactoe-32a88.firebaseapp.com",
+      databaseURL: "https://tictactoe-32a88.firebaseio.com",
+      projectId: "tictactoe-32a88",
+      storageBucket: "tictactoe-32a88.appspot.com",
+      messagingSenderId: "477675755906"
+    };
+    firebase.initializeApp(config);
+    firebase.auth().onAuthStateChanged(user => this.props.setUser('user', user));
+  };
+  render () {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <Route exact path='/' component={MainMenu} />
+        <Route path='/about' component={About} />
+        <Route path='/game' component={GameField} />
+        <Route path='/over' component={GameOver} />
       </div>
     );
-  }
-}
+  };
+};
 
-export default App;
+export default withRouter(connect(_ => ({}), {setUser})(App));

@@ -1,0 +1,37 @@
+canvas {
+  position: fixed;
+  box-shadow: 0 0 1em #666;
+}
+.transition {
+  transition-duration: 0.5s;
+}
+#wrapper {
+  box-sizing: border-box;
+  display: inline-block;
+}
+.st0 {
+  fill:#FF0000;
+}
+.st1, .st2 {
+  fill:#2E3192;
+}
+.st3 {
+  fill: #2E3192;
+  stroke:#2E3192;
+  stroke-width:12;
+  stroke-miterlimit:10;
+}
+.null, .cross {
+  display: block;
+  margin: 10% auto;
+  width: 60px;
+  height: 60px;
+}
+.panel {
+  position: absolute;
+  background: white;
+  z-index: 3;
+}
+.userConnect {
+  cursor: pointer;
+}

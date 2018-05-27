@@ -1,0 +1,15 @@
+.mainHead {
+  display: flex !important;
+  text-align: space-between;
+}
+.user {
+  display: inline !important;
+  margin-right: 1em;
+  width: 40%;
+  text-align: right;
+  vertical-align: bottom !important;
+}
+.ava {
+  display: inline !important;
+  margin: 1em;
+}

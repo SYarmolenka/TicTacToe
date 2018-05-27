@@ -1,0 +1,47 @@
+.flyButton {
+  display: inline-block;
+  text-align: center;
+}
+.flyButton > button {
+  position: relative;
+  width: 5em;
+  height: 5em;
+  font: 2em Arial serif;
+  font-weight: 700;
+  border-radius: 5em;
+  border: none;
+  outline: none;
+  animation: btn  4s infinite ease;
+  background: -webkit-radial-gradient(3em 1em, ellipse cover, #fff 0%,#d2ebf9 100%);
+  z-index: 1;
+}
+.flyButton > button:hover {
+  background: #7676C9;
+  transition-duration: 1s;
+}
+#shadow {
+  display: block;
+  margin: auto;
+  margin-top: -5em;
+  width: 8em;
+  height: 10em;
+  border-radius: 2.5em;
+  background: -webkit-radial-gradient(50% 88%,ellipse contain, rgba(150,150,150,0.6), rgba(0,0,0,0));
+  animation: shadow  4s infinite ease;
+}
+@keyframes shadow {
+  0%, 100% {
+    transform: scaleX(0.8);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+}
+@keyframes btn {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}

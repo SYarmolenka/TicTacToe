@@ -1,0 +1,57 @@
+.cornerMenu {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+  background: -webkit-radial-gradient(3em 1em, ellipse cover, #fff 0%,#d2ebf9 100%);
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  position: fixed;
+}
+.cornerMenu>button {
+  position: relative;
+  background: none;
+  border: none;
+  outline: none;
+}
+.up-left {
+  top: calc(0% - 100px);
+  left: calc(0% - 100px);
+}
+.up-left>button {
+  position: relative;
+  top: -5%;
+  left: -5%;
+}
+.up-right {
+  top: calc(0% - 100px);
+  left: calc(100% - 100px);
+}
+.up-right>button {
+  top: -5%;
+  left: 5%;
+}
+.down-left {
+  top: calc(100% - 100px);
+  left: calc(0% - 100px);
+}
+.down-left>button {
+  top: 5%;
+  left: -5%;
+}
+.down-right {
+  top: calc(100% - 100px);
+  left: calc(100% - 100px);
+}
+.down-right>button {
+  top: 5%;
+  left: 5%;
+}
+.cornerMenu:hover {
+  background: #7676C9;
+  transition-duration: 1s;
+}
+.cornerMenu:active {
+  opacity: 0.1;
+  transition-duration: 0.1s;
+}
