@@ -22,15 +22,16 @@ canvas {
   stroke-miterlimit:10;
 }
 .null, .cross {
-  position: absolute;
-  opacity: 0.5;
-  top: 1em;
-  left: 1em;
-  z-index: 1;
-  pointer-events: none;
+  display: block;
+  margin: 10% auto;
+  width: 60px;
+  height: 60px;
 }
 .panel {
   position: absolute;
   background: white;
   z-index: 3;
+}
+.userConnect {
+  cursor: pointer;
 }

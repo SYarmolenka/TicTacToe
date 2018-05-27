@@ -9,7 +9,7 @@ class Online extends Component {
   constructor (props) {
     super(props);
     firebase.database().ref('users/').on('value', data => {
-      this.dataReady = 1;
+      if (this.dataReady === undefined) this.dataReady = 1;
       this.props.changeData('usersOnline', this.filterUsers(data.val()) || 'No active rooms');
     });
   };
@@ -53,15 +53,20 @@ class Online extends Component {
         data = data.val();
         if (data.players[1]) { // если админ комнаты согласен, то
           this.props.changeData('signObserver', key); // записываем ключ для подписки на изменение данных на сервере 
-          this.props.setMode('online', this.props.mainUser.uid); // 
-          window.location.hash = 'game';
+          this.props.setMode('online', ownKey); // записываем в online props (старт игры) собственный key
+          window.location.hash = 'game'; // переключаемся на игру
         } else {
-          //khgjhgjkhjkkgkjhgkjhgjkhgkjhghjjjjjjjjj
+          if (this.props.connecting) {
+            if (!data.connect || (data.connect && key in data.connect)) {
+              this.dataReady = 1; // скрыть спиннер
+              this.props.changeData('connecting', false); // активировать кнопку создания комнаты
+            };
+          };
         };
       });
     });
-    this.props.changeData('connecting', true);
-    this.dataReady = 0;
+    this.dataReady = 0; // показать спиннер
+    this.props.changeData('connecting', true); // деактивировать кнопку создания комнаты
   };
   createRoom = () => {
     if (!this.dataReady) return;
@@ -88,7 +93,6 @@ class Online extends Component {
           <Divider horizontal>connect to room</Divider>
           {(_ => {return this.dataReady ? this.createRoomList() : <p>...Spinner</p> })()}
           <Divider horizontal>or create room</Divider>
-          {/* <Input fluid type='text' value={this.props.name} placeholder='Name of room...' onChange={e => this.props.changeData('name', e.target.value)} /> */}
           <Button disabled={this.props.connecting} color='green' fluid onClick={this.createRoom}>Create Room</Button>
         </Modal.Content>
       </Modal>

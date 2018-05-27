@@ -6,9 +6,11 @@ import {setMode} from '../../actions/game';
 
 class ModalPlayerAI extends Component {
   componentWillReceiveProps (props) {
-    if (props.open) {
+    if (props.open && !props.player) {
       this.props.setMode('player1', 'X');
       this.props.setMode('AI1', 'O');
+    };
+    if (props.open && !props.level) {
       this.props.setMode('level', 'easy');
     };
   };
